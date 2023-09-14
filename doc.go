@@ -3,7 +3,7 @@
 // See the file LICENSE in this distribution for more details.
 
 /*
-Package github.com/sttk/linebreak is a library for breaking the given text into
+Package github.com/sttk/linebreak is a library for breaking a given text into
 lines within a specified width.
 This library also supports per-line indentation.
 */
