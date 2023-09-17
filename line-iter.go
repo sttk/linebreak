@@ -8,6 +8,8 @@ import (
 	"strings"
 	"text/scanner"
 	"unicode"
+
+	"golang.org/x/text/width"
 )
 
 // Line break opprtunity type
@@ -177,7 +179,15 @@ func runeWidth(r rune) int {
 	if !unicode.IsPrint(r) {
 		return 0
 	}
-	return 1
+
+	switch width.LookupRune(r).Kind() {
+	case width.EastAsianNarrow, width.EastAsianHalfwidth, width.Neutral:
+		return 1
+	case width.EastAsianWide, width.EastAsianFullwidth:
+		return 2
+	default: // width.EastAsianAmbiguous
+		return 2
+	}
 }
 
 func trimRight(runes []rune) []rune {
