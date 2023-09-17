@@ -41,6 +41,6 @@ func (rb *runeBuffer) cr(start int) {
 	rb.length = n
 }
 
-func (rb runeBuffer) slice() []rune {
+func (rb runeBuffer) full() []rune {
 	return rb.runes[0:rb.length]
 }

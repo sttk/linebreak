@@ -74,7 +74,7 @@ func (iter *LineIter) Next() (string, bool) {
 		lboTyp := lineBreakOppotunity(r)
 
 		if lboTyp == lbo_break {
-			line = string(trimRight(iter.buffer.slice()))
+			line = string(trimRight(iter.buffer.full()))
 			iter.buffer.length = 0
 			iter.width[0] = 0
 			iter.width[1] = 0
@@ -151,7 +151,7 @@ func (iter *LineIter) Next() (string, bool) {
 		}
 	}
 
-	line = string(trimRight(iter.buffer.slice()))
+	line = string(trimRight(iter.buffer.full()))
 	iter.buffer.length = 0
 
 	if len(line) > 0 {
