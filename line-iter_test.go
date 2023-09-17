@@ -378,3 +378,60 @@ func TestLineIter_textContainsNonPrintChar(t *testing.T) {
 	assert.Equal(t, line, "klmn")
 	assert.Equal(t, more, false)
 }
+
+func TestLineIter_letterWidthOfEastAsianWideLetter(t *testing.T) {
+	text := "東アジアの全角文字は２文字分の幅をとります。"
+	iter := linebreak.New(text, 20)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "東アジアの全角文字は")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "２文字分の幅をとりま")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "す。")
+}
+
+func TestLineIter_lineBreaksOfEastAsianWideLetter(t *testing.T) {
+	text := "東アジアの全角文字は基本的に、文字の前後どちらに行の終わりが来て" +
+		"も改行が行われます。"
+	iter := linebreak.New(text, 28)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "東アジアの全角文字は基本的")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "に、文字の前後どちらに行の終")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "わりが来ても改行が行われま")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "す。")
+}
+
+func TestLineIter_japanese(t *testing.T) {
+	text := "私はその人を常に先生と呼んでいた。だからここでもただ先生と書くだ" +
+		"けで本名は打ち明けない。これは世間を憚かる遠慮というよりも、その方が私" +
+		"にとって自然だからである。私はその人の記憶を呼び起すごとに、すぐ「先生" +
+		"」といいたくなる。筆を執っても心持は同じ事である。よそよそしい頭文字な" +
+		"どはとても使う気にならない。"
+
+	iter := linebreak.New(text, 50)
+
+	for {
+		line, more := iter.Next()
+		fmt.Println(line)
+		if !more {
+			break
+		}
+	}
+}

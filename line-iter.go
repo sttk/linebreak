@@ -8,6 +8,8 @@ import (
 	"strings"
 	"text/scanner"
 	"unicode"
+
+	"golang.org/x/text/width"
 )
 
 // Line break opprtunity type
@@ -74,7 +76,7 @@ func (iter *LineIter) Next() (string, bool) {
 		lboTyp := lineBreakOppotunity(r)
 
 		if lboTyp == lbo_break {
-			line = string(trimRight(iter.buffer.slice()))
+			line = string(trimRight(iter.buffer.full()))
 			iter.buffer.length = 0
 			iter.width[0] = 0
 			iter.width[1] = 0
@@ -98,7 +100,7 @@ func (iter *LineIter) Next() (string, bool) {
 				lboPos = iter.buffer.length
 			}
 			if lboPos == 0 {
-				//iter.width[0] += iter.width[1]
+				iter.width[0] += iter.width[1]
 				iter.width[1] = 0
 				lboPos = iter.buffer.length
 			}
@@ -111,12 +113,12 @@ func (iter *LineIter) Next() (string, bool) {
 				iter.width[0] = 0
 				iter.width[1] = 0
 				iter.lboPos = 0
-			//case lbo_before:
-			//	iter.buffer.add(r)
-			//	iter.width[0] = runeW
-			//	iter.width[1] = 0
-			//	iter.lboPos = 0
-			case lbo_after, lbo_both:
+			case lbo_before, lbo_both:
+				iter.buffer.add(r)
+				iter.width[0] = runeW
+				iter.width[1] = 0
+				iter.lboPos = 0
+			case lbo_after:
 				iter.buffer.add(r)
 				iter.width[0] = iter.width[1] + runeW
 				iter.width[1] = 0
@@ -138,11 +140,11 @@ func (iter *LineIter) Next() (string, bool) {
 			iter.buffer.add(r)
 		}
 		switch lboTyp {
-		//case lbo_before:
-		//	iter.lboPos = iter.buffer.length - 1
-		//	iter.width[0] += iter.width[1]
-		//	iter.width[1] = runeW
-		case lbo_after, lbo_both, lbo_space:
+		case lbo_before, lbo_both:
+			iter.lboPos = iter.buffer.length - 1
+			iter.width[0] += iter.width[1]
+			iter.width[1] = runeW
+		case lbo_after, lbo_space:
 			iter.lboPos = iter.buffer.length
 			iter.width[0] += iter.width[1] + runeW
 			iter.width[1] = 0
@@ -151,7 +153,7 @@ func (iter *LineIter) Next() (string, bool) {
 		}
 	}
 
-	line = string(trimRight(iter.buffer.slice()))
+	line = string(trimRight(iter.buffer.full()))
 	iter.buffer.length = 0
 
 	if len(line) > 0 {
@@ -170,6 +172,12 @@ func lineBreakOppotunity(r rune) lboType {
 	if unicode.IsPunct(r) {
 		return lbo_after
 	}
+
+	switch width.LookupRune(r).Kind() {
+	case width.EastAsianWide, width.EastAsianFullwidth:
+		return lbo_both
+	}
+
 	return lbo_never
 }
 
@@ -177,7 +185,15 @@ func runeWidth(r rune) int {
 	if !unicode.IsPrint(r) {
 		return 0
 	}
-	return 1
+
+	switch width.LookupRune(r).Kind() {
+	case width.EastAsianNarrow, width.EastAsianHalfwidth, width.Neutral:
+		return 1
+	case width.EastAsianWide, width.EastAsianFullwidth:
+		return 2
+	default: // width.EastAsianAmbiguous
+		return 2
+	}
 }
 
 func trimRight(runes []rune) []rune {
