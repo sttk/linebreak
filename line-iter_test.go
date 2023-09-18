@@ -418,12 +418,139 @@ func TestLineIter_lineBreaksOfEastAsianWideLetter(t *testing.T) {
 	assert.Equal(t, line, "す。")
 }
 
+func TestLineIter_prohibitionsOfLineBreakOfJapanese_start(t *testing.T) {
+	text := "句読点は、行頭に置くことは禁止である。"
+	iter := linebreak.New(text, 8)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "句読点")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "は、行頭")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "に置くこ")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "とは禁止")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "である。")
+}
+
+func TestLineIter_prohibitionsOfLineBreakOfJapanese_end(t *testing.T) {
+	text := "開き括弧は「行末に置く」ことは禁止である。"
+	iter := linebreak.New(text, 12)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "開き括弧は")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "「行末に置")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "く」ことは禁")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "止である。")
+}
+
+func TestLineIter_prohibitionsOfLineBreakOfEnglish(t *testing.T) {
+	text := "abc def ghi(jkl mn opq rst uvw xyz)"
+	iter := linebreak.New(text, 11)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "abc def ghi")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "(jkl mn opq")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "rst uvw")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "xyz)")
+}
+
+func TestLineIter_prohibitionsOfLineBreakOfEnglish_quots(t *testing.T) {
+	text := `abc def " ghi j " kl mno pq" rst uvw" xyz`
+	iter := linebreak.New(text, 9)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "abc def")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "\" ghi j \"")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "kl mno pq")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "\" rst")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "uvw\" xyz")
+}
+
+func TestLineIter_prohibitionsOfLineBreakOfEnglish_mixedQuots(t *testing.T) {
+	text := `abc def " ghi j ' kl mno pq' rst uvw" xyz`
+	iter := linebreak.New(text, 9)
+
+	line, more := iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "abc def")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "\" ghi j")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "' kl mno")
+
+	line, more = iter.Next()
+	assert.True(t, more)
+	assert.Equal(t, line, "pq' rst")
+
+	line, more = iter.Next()
+	assert.False(t, more)
+	assert.Equal(t, line, "uvw\" xyz")
+
+	iter = linebreak.New(text, 9)
+
+	for {
+		line, more := iter.Next()
+		fmt.Println(line)
+		if !more {
+			break
+		}
+	}
+}
+
 func TestLineIter_japanese(t *testing.T) {
 	text := "私はその人を常に先生と呼んでいた。だからここでもただ先生と書くだ" +
 		"けで本名は打ち明けない。これは世間を憚かる遠慮というよりも、その方が私" +
 		"にとって自然だからである。私はその人の記憶を呼び起すごとに、すぐ「先生" +
 		"」といいたくなる。筆を執っても心持は同じ事である。よそよそしい頭文字な" +
-		"どはとても使う気にならない。"
+		"どはとても使う気にならない。\n（夏目漱石「こころ」から引用）"
 
 	iter := linebreak.New(text, 50)
 
