@@ -23,6 +23,18 @@ func TermWidth() int {
 	return w
 }
 
+// TextWidth is the function that calculates a text width.
+// This function calculates the width of the specified text taking into
+// account the letter width determined by the Unicode Standard Annex #11
+// (UAX11) East-Asian-Width.
+func TextWidth(text string) int {
+	w := 0
+	for _, r := range text {
+		w += runeWidth(r)
+	}
+	return w
+}
+
 // Spaces is the function that generates a consecutive ASCII spaces of which
 // count is specified by the argument.
 // If the count is negative, this function returns an empty strings.
