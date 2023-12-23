@@ -112,6 +112,15 @@ func TestLineIter_Next_removeTailingSpaceOfEachLine(t *testing.T) {
 	assert.Equal(t, line, "")
 }
 
+func TestLineIter_Next_removeSpacesOfAllSpaceLine(t *testing.T) {
+	text := "       "
+	iter := linebreak.New(text, 10)
+
+	line, more := iter.Next()
+	assert.Equal(t, more, false)
+	assert.Equal(t, line, "")
+}
+
 func TestLineIter_Next_thereIsNoLineBreakOppotunity(t *testing.T) {
 	text := "12345678901234567890abcdefghij"
 	iter := linebreak.New(text, 20)

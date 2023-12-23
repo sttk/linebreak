@@ -291,11 +291,10 @@ func runeWidth(r rune) int {
 }
 
 func trimRight(runes []rune) []rune {
-	i := len(runes) - 1
-	for ; i >= 0; i-- {
+	for i := len(runes) - 1; i >= 0; i-- {
 		if !unicode.IsSpace(runes[i]) {
 			return runes[0 : i+1]
 		}
 	}
-	return runes
+	return []rune{}
 }
