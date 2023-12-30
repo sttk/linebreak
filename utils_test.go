@@ -7,16 +7,17 @@ import (
 	"github.com/sttk/linebreak"
 )
 
-func TestTermWidth(t *testing.T) {
-	assert.Equal(t, linebreak.TermWidth(), 80)
+func TestTermCols(t *testing.T) {
+	assert.Equal(t, linebreak.TermCols(), 80)
+}
+
+func TestTermSize(t *testing.T) {
+	cols, rows := linebreak.TermSize()
+	assert.Equal(t, cols, 80)
+	assert.Equal(t, rows, 24)
 }
 
 func TestTextWidth(t *testing.T) {
 	assert.Equal(t, linebreak.TextWidth("abc"), 3)
 	assert.Equal(t, linebreak.TextWidth("あいう"), 6)
-}
-
-func TestSpaces(t *testing.T) {
-	assert.Equal(t, linebreak.Spaces(3), "   ")
-	assert.Equal(t, linebreak.Spaces(-1), "")
 }
