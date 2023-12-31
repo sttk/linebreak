@@ -6,9 +6,9 @@ import (
 )
 
 func TestRuneWidth(t *testing.T) {
-	assert.Equal(t, runeWidth('a'), 1)
-	assert.Equal(t, runeWidth('あ'), 2)
-	assert.Equal(t, runeWidth('ｱ'), 1)
+	assert.Equal(t, RuneWidth('a'), 1)
+	assert.Equal(t, RuneWidth('あ'), 2)
+	assert.Equal(t, RuneWidth('ｱ'), 1)
 }
 
 func TestTrimRight(t *testing.T) {

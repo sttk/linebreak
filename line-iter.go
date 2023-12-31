@@ -31,8 +31,8 @@ type lboState struct {
 	openQuot int8 // 0:not, 1:opened, 2:opened inside '...'
 }
 
-// LineIter is the struct that output the given string line by line.
-// This struct can control the overall line witdh and the indentation from any
+// LineIter is the struct that outputs the given string line by line.
+// This struct can control the overall line width and the indentation from any
 // desired line.
 type LineIter struct {
 	scanner  *scanner.Scanner
@@ -64,7 +64,7 @@ func (iter *LineIter) SetIndent(indent string) {
 	iter.indent = indent
 }
 
-// Init is the method to re-initialize with an argument string and reuse this
+// Init is the method to re-initialize with an argument string for reusing this
 // instance.
 func (iter *LineIter) Init(text string) {
 	iter.scanner.Init(strings.NewReader(text))
@@ -76,7 +76,7 @@ func (iter *LineIter) Init(text string) {
 	iter.openApos = 0
 }
 
-// Next is the method that returns a string of a next line and a bool which
+// Next is the method that returns a string of the next line and a bool which
 // indicates whether there are more next lines or not.
 func (iter *LineIter) Next() (string, bool) {
 	limit := iter.limit - len(iter.indent)
@@ -108,7 +108,7 @@ func (iter *LineIter) Next() (string, bool) {
 			continue
 		}
 
-		runeW := runeWidth(r)
+		runeW := RuneWidth(r)
 		lboPos := iter.lboPos
 
 		if (iter.width[0] + iter.width[1] + runeW) > limit {
@@ -273,21 +273,6 @@ func contains(candidates []rune, r rune) bool {
 		}
 	}
 	return false
-}
-
-func runeWidth(r rune) int {
-	if !unicode.IsPrint(r) {
-		return 0
-	}
-
-	switch width.LookupRune(r).Kind() {
-	case width.EastAsianNarrow, width.EastAsianHalfwidth, width.Neutral:
-		return 1
-	case width.EastAsianWide, width.EastAsianFullwidth:
-		return 2
-	default: // width.EastAsianAmbiguous
-		return 2
-	}
 }
 
 func trimRight(runes []rune) []rune {

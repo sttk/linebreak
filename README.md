@@ -17,7 +17,7 @@ import "github.com/sttk/linebreak"
 The following code breaks the argument text into lines within the terminal width, and outputs them to stdout.
 
 ```
-iter := linebreak.New(text, linebreak.TermWidth())
+iter := linebreak.New(text, linebreak.TermCols())
 for {
 	line, more := iter.Next()
 	fmt.Println(line)

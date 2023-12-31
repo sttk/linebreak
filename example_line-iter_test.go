@@ -2,6 +2,8 @@ package linebreak_test
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/sttk/linebreak"
 )
 
@@ -45,7 +47,7 @@ func ExampleLineIter_SetIndent() {
 
 	if more {
 		for i := 1; ; i++ {
-			iter.SetIndent(linebreak.Spaces(i * 2))
+			iter.SetIndent(strings.Repeat(" ", i*2))
 			line, more := iter.Next()
 			fmt.Println(line)
 			if !more {
