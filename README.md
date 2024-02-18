@@ -37,27 +37,31 @@ This library supports Go 1.18 or later.
 % gvm-fav
 Now using version go1.18.10
 go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/linebreak	0.152s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.212s	coverage: 98.9% of statements
 
 Now using version go1.19.13
 go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/linebreak	0.166s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.217s	coverage: 98.9% of statements
 
-Now using version go1.20.8
-go version go1.20.8 darwin/amd64
-ok  	github.com/sttk/linebreak	0.162s	coverage: 98.9% of statements
+Now using version go1.20.14
+go version go1.20.14 darwin/amd64
+ok  	github.com/sttk/linebreak	0.179s	coverage: 98.9% of statements
 
-Now using version go1.21.1
-go version go1.21.1 darwin/amd64
-ok  	github.com/sttk/linebreak	0.174s	coverage: 98.9% of statements
+Now using version go1.21.7
+go version go1.21.7 darwin/amd64
+ok  	github.com/sttk/linebreak	0.184s	coverage: 98.9% of statements
 
-Back to go1.21.1
-Now using version go1.21.1
+Now using version go1.22
+go version go1.22.0 darwin/amd64
+ok  	github.com/sttk/linebreak	0.182s	coverage: 98.9% of statements
+
+Back to go1.22
+Now using version go1.22
 ```
 
 ## License
 
-Copyright (C) 2023 Takayuki Sato
+Copyright (C) 2023-2024 Takayuki Sato
 
 This program is free software under MIT License.<br>
 See the file LICENSE in this distribution for more details.
