@@ -37,23 +37,23 @@ This library supports Go 1.18 or later.
 % gvm-fav
 Now using version go1.18.10
 go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/linebreak	0.212s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.164s	coverage: 98.3% of statements
 
 Now using version go1.19.13
 go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/linebreak	0.217s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.170s	coverage: 98.3% of statements
 
 Now using version go1.20.14
 go version go1.20.14 darwin/amd64
-ok  	github.com/sttk/linebreak	0.179s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.127s	coverage: 98.3% of statements
 
 Now using version go1.21.7
 go version go1.21.7 darwin/amd64
-ok  	github.com/sttk/linebreak	0.184s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.159s	coverage: 98.3% of statements
 
 Now using version go1.22
 go version go1.22.0 darwin/amd64
-ok  	github.com/sttk/linebreak	0.182s	coverage: 98.9% of statements
+ok  	github.com/sttk/linebreak	0.128s	coverage: 98.3% of statements
 
 Back to go1.22
 Now using version go1.22
