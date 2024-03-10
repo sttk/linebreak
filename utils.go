@@ -59,10 +59,11 @@ func RuneWidth(r rune) int {
 	}
 }
 
-// TextWidth is the function that returns the display width of the spe
-// This function calculates the width of the specified text taking into
-// account the letter width determined by the Unicode Standard Annex #11
-// (UAX11) East-Asian-Width.
+// TextWidth is the function that returns the display width of the specified
+// text.
+// This function calculates the width of the text taking into account the
+// letter width determined by the Unicode Standard Annex #11 (UAX11)
+// East-Asian-Width.
 func TextWidth(text string) int {
 	w := 0
 	for _, r := range text {
