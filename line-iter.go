@@ -88,7 +88,7 @@ func (iter *LineIter) Next() (string, bool) {
 	state.openApos = iter.openApos
 
 	for r := iter.scanner.Next(); r != scanner.EOF; r = iter.scanner.Next() {
-		lineBreakOppotunity(r, &state)
+		lineBreakOpportunity(r, &state)
 
 		if state.lboType == lbo_break {
 			line = string(trimRight(iter.buffer.full()))
@@ -207,7 +207,7 @@ func (iter *LineIter) Next() (string, bool) {
 	return line, false
 }
 
-func lineBreakOppotunity(r rune, state *lboState) {
+func lineBreakOpportunity(r rune, state *lboState) {
 	state.lboPrev = state.lboType
 
 	switch r {
@@ -216,10 +216,10 @@ func lineBreakOppotunity(r rune, state *lboState) {
 			state.openQuot = state.openApos + 1
 			state.lboType = lbo_before
 		} else { // close
-			state.openQuot = 0
 			if state.openQuot < state.openApos {
 				state.openApos = 0
 			}
+			state.openQuot = 0
 			state.lboType = lbo_after
 		}
 		return
@@ -228,10 +228,10 @@ func lineBreakOppotunity(r rune, state *lboState) {
 			state.openApos = state.openQuot + 1
 			state.lboType = lbo_before
 		} else { // close
-			state.openApos = 0
 			if state.openApos < state.openQuot {
 				state.openQuot = 0
 			}
+			state.openApos = 0
 			state.lboType = lbo_after
 		}
 		return
