@@ -61,7 +61,7 @@ func TestLineIter_Next_equalToLineWidth(t *testing.T) {
 	assert.Equal(t, line, "")
 }
 
-func TestLineIter_Next_breakAtLineBreakOppotunity(t *testing.T) {
+func TestLineIter_Next_breakAtLineBreakOpportunity(t *testing.T) {
 	text := "1234567890 abcdefghij"
 	iter := linebreak.New(text, 20)
 
@@ -121,7 +121,7 @@ func TestLineIter_Next_removeSpacesOfAllSpaceLine(t *testing.T) {
 	assert.Equal(t, line, "")
 }
 
-func TestLineIter_Next_thereIsNoLineBreakOppotunity(t *testing.T) {
+func TestLineIter_Next_thereIsNoLineBreakOpportunity(t *testing.T) {
 	text := "12345678901234567890abcdefghij"
 	iter := linebreak.New(text, 20)
 
