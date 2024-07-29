@@ -10,6 +10,9 @@ errcheck() {
 clean() {
   go clean --cache
   errcheck $?
+
+  # Clean mod cache for removing a gvm version
+  # go clean -modcache
 }
 
 deps() {
