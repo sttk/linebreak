@@ -165,6 +165,37 @@ func TestLineIter_SetIndent(t *testing.T) {
 	assert.Equal(t, line, "")
 }
 
+func TestLineIter_breakPositionAfterIndentWidthIsIncreased(t *testing.T) {
+	lineWidth := 30
+	indent := strings.Repeat(" ", 7)
+	text := "aaaaa " + strings.Repeat("b", lineWidth-7) + strings.Repeat("c", lineWidth-7) +
+		"ddd"
+
+	iter := linebreak.New(text, lineWidth)
+
+	line, more := iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, "aaaaa")
+	assert.Equal(t, len(line), 5)
+
+	iter.SetIndent(indent)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("b", lineWidth-7))
+	assert.Equal(t, len(line), lineWidth)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("c", lineWidth-7))
+	assert.Equal(t, len(line), lineWidth)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, false)
+	assert.Equal(t, line, "       ddd")
+	assert.Equal(t, len(line), 10)
+}
+
 func TestLineIter_Init(t *testing.T) {
 	text := "12345678901234567890"
 	iter := linebreak.New(text, 12)
