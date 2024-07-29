@@ -81,6 +81,32 @@ func (iter *LineIter) Init(text string) {
 func (iter *LineIter) Next() (string, bool) {
 	limit := iter.limit - len(iter.indent)
 
+	if iter.width[0] > limit {
+		diff := iter.width[0] - limit
+		iter.width[0] = diff
+		for i := iter.buffer.length - 1; i >= 0; i-- {
+			r := iter.buffer.runes[i]
+			runeW := RuneWidth(r)
+			if diff <= runeW {
+				line := string(trimRight(iter.buffer.runes[0:i]))
+				iter.buffer.cr(i)
+				if len(line) > 0 {
+					line = iter.indent + line
+				}
+				return line, true
+			}
+			diff -= runeW
+		}
+	} else if iter.width[0] == limit {
+		iter.width[0] = 0
+		line := string(trimRight(iter.buffer.runes))
+		iter.buffer.cr(0)
+		if len(line) > 0 {
+			line = iter.indent + line
+		}
+		return line, true
+	}
+
 	var line string
 
 	var state lboState
