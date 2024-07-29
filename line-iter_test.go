@@ -168,32 +168,61 @@ func TestLineIter_SetIndent(t *testing.T) {
 func TestLineIter_breakPositionAfterIndentWidthIsIncreased(t *testing.T) {
 	lineWidth := 30
 	indent := strings.Repeat(" ", 7)
-	text := "aaaaa " + strings.Repeat("b", lineWidth-7) + strings.Repeat("c", lineWidth-7) +
-		"ddd"
+	text := "aaaaa " + strings.Repeat("b", lineWidth-7) + strings.Repeat("c", lineWidth-7) + "ddd"
 
 	iter := linebreak.New(text, lineWidth)
 
 	line, more := iter.Next()
 	assert.Equal(t, more, true)
 	assert.Equal(t, line, "aaaaa")
-	assert.Equal(t, len(line), 5)
+	assert.Equal(t, linebreak.TextWidth(line), 5)
 
 	iter.SetIndent(indent)
 
 	line, more = iter.Next()
 	assert.Equal(t, more, true)
 	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("b", lineWidth-7))
-	assert.Equal(t, len(line), lineWidth)
+	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
 	line, more = iter.Next()
 	assert.Equal(t, more, true)
 	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("c", lineWidth-7))
-	assert.Equal(t, len(line), lineWidth)
+	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
 	line, more = iter.Next()
 	assert.Equal(t, more, false)
 	assert.Equal(t, line, "       ddd")
-	assert.Equal(t, len(line), 10)
+	assert.Equal(t, linebreak.TextWidth(line), 10)
+}
+
+func TestLineIter_breakPositionIfIndentContainsFullWidthChars(t *testing.T) {
+	lineWidth := 30
+	indent := "__ああ__" // width is 8.
+	text := "aaaaa " + strings.Repeat("b", lineWidth-8) + strings.Repeat("c", lineWidth-8) + "ddd"
+
+	iter := linebreak.New(text, lineWidth)
+
+	line, more := iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, "aaaaa")
+	assert.Equal(t, linebreak.TextWidth(line), 5)
+
+	iter.SetIndent(indent)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, indent+strings.Repeat("b", lineWidth-8))
+	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, true)
+	assert.Equal(t, line, indent+strings.Repeat("c", lineWidth-8))
+	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
+
+	line, more = iter.Next()
+	assert.Equal(t, more, false)
+	assert.Equal(t, line, indent+"ddd")
+	assert.Equal(t, linebreak.TextWidth(line), 11)
 }
 
 func TestLineIter_Init(t *testing.T) {

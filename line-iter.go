@@ -35,14 +35,15 @@ type lboState struct {
 // This struct can control the overall line width and the indentation from any
 // desired line.
 type LineIter struct {
-	scanner  *scanner.Scanner
-	buffer   runeBuffer
-	width    [2]int /* 0: width before lbo, 1: width after lbo */
-	lboPos   int
-	limit    int
-	indent   string
-	openQuot int8
-	openApos int8
+	scanner     *scanner.Scanner
+	buffer      runeBuffer
+	width       [2]int /* 0: width before lbo, 1: width after lbo */
+	lboPos      int
+	limit       int
+	indent      string
+	indentWidth int
+	openQuot    int8
+	openApos    int8
 }
 
 // New is the function that creates a LineIter instance which outputs the given
@@ -62,6 +63,7 @@ func New(text string, lineWidth int) LineIter {
 // SetIndent is the method to set an indentation for the subsequent lines.
 func (iter *LineIter) SetIndent(indent string) {
 	iter.indent = indent
+	iter.indentWidth = TextWidth(indent)
 }
 
 // Init is the method to re-initialize with an argument string for reusing this
@@ -79,7 +81,7 @@ func (iter *LineIter) Init(text string) {
 // Next is the method that returns a string of the next line and a bool which
 // indicates whether there are more next lines or not.
 func (iter *LineIter) Next() (string, bool) {
-	limit := iter.limit - len(iter.indent)
+	limit := iter.limit - iter.indentWidth
 
 	if iter.width[0] > limit {
 		diff := iter.width[0] - limit
