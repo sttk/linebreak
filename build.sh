@@ -12,6 +12,15 @@ clean() {
   errcheck $?
 }
 
+deps() {
+  go list -u -m all
+  errcheck $?
+
+  # Upgrade
+  # go get -u ./...
+  # go get -t -u ./...
+}
+
 format() {
   go fmt ./...
   errcheck $?
@@ -72,6 +81,9 @@ else
     case "$a" in
     clean)
       clean
+      ;;
+    deps)
+      deps
       ;;
     format)
       format
