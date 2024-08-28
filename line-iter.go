@@ -36,6 +36,7 @@ type lboState struct {
 // desired line.
 type LineIter struct {
 	scanner     *scanner.Scanner
+	isEnd       bool
 	buffer      runeBuffer
 	width       [2]int /* 0: width before lbo, 1: width after lbo */
 	lboPos      int
@@ -76,11 +77,20 @@ func (iter *LineIter) Init(text string) {
 	iter.lboPos = 0
 	iter.openQuot = 0
 	iter.openApos = 0
+	iter.isEnd = false
+}
+
+func (iter LineIter) HasNext() bool {
+	return !iter.isEnd
 }
 
 // Next is the method that returns a string of the next line and a bool which
-// indicates whether there are more next lines or not.
+// indicates whether the returned line exists.
 func (iter *LineIter) Next() (string, bool) {
+	if iter.isEnd {
+		return "", false
+	}
+
 	limit := iter.limit - iter.indentWidth
 
 	if iter.width[0] > limit {
@@ -232,7 +242,8 @@ func (iter *LineIter) Next() (string, bool) {
 	if len(line) > 0 {
 		line = iter.indent + line
 	}
-	return line, false
+	iter.isEnd = true
+	return line, true
 }
 
 func lineBreakOpportunity(r rune, state *lboState) {
