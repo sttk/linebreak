@@ -18,12 +18,22 @@ The following code breaks the argument text into lines within the terminal width
 
 ```
 iter := linebreak.New(text, linebreak.TermCols())
-for {
-	line, more := iter.Next()
+for iter.HasNext() {
+	line, _ := iter.Next()
 	fmt.Println(line)
-	if !more {
+}
+```
+
+Or
+
+```
+iter := linebreak.New(text, linebreak.TermCols())
+for {
+	line, exists := iter.Next()
+	if !exists {
 		break
 	}
+	fmt.Println(line)
 }
 ```
 
@@ -37,26 +47,26 @@ This library supports Go 1.18 or later.
 % gvm-fav
 Now using version go1.18.10
 go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/linebreak	0.583s	coverage: 95.5% of statements
+ok  	github.com/sttk/linebreak	0.516s	coverage: 95.6% of statements
 
 Now using version go1.19.13
 go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/linebreak	0.594s	coverage: 95.5% of statements
+ok  	github.com/sttk/linebreak	0.510s	coverage: 95.6% of statements
 
 Now using version go1.20.14
 go version go1.20.14 darwin/amd64
-ok  	github.com/sttk/linebreak	0.539s	coverage: 95.5% of statements
+ok  	github.com/sttk/linebreak	0.521s	coverage: 95.6% of statements
 
-Now using version go1.21.7
-go version go1.21.7 darwin/amd64
-ok  	github.com/sttk/linebreak	0.545s	coverage: 95.5% of statements
+Now using version go1.21.13
+go version go1.21.13 darwin/amd64
+ok  	github.com/sttk/linebreak	0.527s	coverage: 95.6% of statements
 
-Now using version go1.22.5
-go version go1.22.5 darwin/amd64
-ok  	github.com/sttk/linebreak	0.543s	coverage: 95.5% of statements
+Now using version go1.22.6
+go version go1.22.6 darwin/amd64
+ok  	github.com/sttk/linebreak	0.521s	coverage: 95.6% of statements
 
-Back to go1.22.5
-Now using version go1.22.5
+Back to go1.22.6
+Now using version go1.22.6
 ```
 
 ## License

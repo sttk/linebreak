@@ -13,12 +13,19 @@ func TestLineIter_Next_emptyText(t *testing.T) {
 	text := ""
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
+	assert.Equal(t, line, "")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -26,12 +33,19 @@ func TestLineIter_Next_oneCharText(t *testing.T) {
 	text := "a"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
+	assert.Equal(t, line, "")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -39,12 +53,14 @@ func TestLineIter_Next_lessThanLineWidth(t *testing.T) {
 	text := "1234567890123456789"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -52,12 +68,14 @@ func TestLineIter_Next_equalToLineWidth(t *testing.T) {
 	text := "12345678901234567890"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -65,16 +83,19 @@ func TestLineIter_Next_breakAtLineBreakOpportunity(t *testing.T) {
 	text := "1234567890 abcdefghij"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:10])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[11:21])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -82,16 +103,19 @@ func TestLineIter_Next_removeHeadingSpaceOfEachLine(t *testing.T) {
 	text := "12345678901234567890   abcdefghij"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:20])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[23:])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -99,16 +123,19 @@ func TestLineIter_Next_removeTailingSpaceOfEachLine(t *testing.T) {
 	text := "12345678901234567      abcdefghij"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:17])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[23:])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -116,8 +143,14 @@ func TestLineIter_Next_removeSpacesOfAllSpaceLine(t *testing.T) {
 	text := "       "
 	iter := linebreak.New(text, 10)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
+	assert.Equal(t, line, "")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -125,16 +158,19 @@ func TestLineIter_Next_thereIsNoLineBreakOpportunity(t *testing.T) {
 	text := "12345678901234567890abcdefghij"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:20])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[20:])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -142,26 +178,31 @@ func TestLineIter_SetIndent(t *testing.T) {
 	text := "12345678901234567890abcdefghij"
 	iter := linebreak.New(text, 10)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:10])
 
 	iter.SetIndent("   ")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "   "+text[10:17])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "   "+text[17:24])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "   "+text[24:])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -172,27 +213,37 @@ func TestLineIter_breakPositionAfterIndentWidthIsIncreased(t *testing.T) {
 
 	iter := linebreak.New(text, lineWidth)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "aaaaa")
 	assert.Equal(t, linebreak.TextWidth(line), 5)
 
 	iter.SetIndent(indent)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("b", lineWidth-7))
 	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, strings.Repeat(" ", 7)+strings.Repeat("c", lineWidth-7))
 	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "       ddd")
 	assert.Equal(t, linebreak.TextWidth(line), 10)
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
+	assert.Equal(t, line, "")
+	assert.Equal(t, linebreak.TextWidth(line), 0)
 }
 
 func TestLineIter_breakPositionIfIndentContainsFullWidthChars(t *testing.T) {
@@ -202,58 +253,74 @@ func TestLineIter_breakPositionIfIndentContainsFullWidthChars(t *testing.T) {
 
 	iter := linebreak.New(text, lineWidth)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "aaaaa")
 	assert.Equal(t, linebreak.TextWidth(line), 5)
 
 	iter.SetIndent(indent)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, indent+strings.Repeat("b", lineWidth-8))
 	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, indent+strings.Repeat("c", lineWidth-8))
 	assert.Equal(t, linebreak.TextWidth(line), lineWidth)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, indent+"ddd")
 	assert.Equal(t, linebreak.TextWidth(line), 11)
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
+	assert.Equal(t, line, "")
+	assert.Equal(t, linebreak.TextWidth(line), 0)
 }
 
 func TestLineIter_Init(t *testing.T) {
 	text := "12345678901234567890"
 	iter := linebreak.New(text, 12)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:12])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[12:])
 
 	text = "abcdefghijklmnopqrstuvwxyz"
 	iter.Init(text)
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[0:12])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[12:24])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, text[24:])
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -265,144 +332,179 @@ Go is expressive, concise, clean, and efficient. Its concurrency mechanisms make
 func TestLineIter_Next_tryLongText(t *testing.T) {
 	iter := linebreak.New(longText, 20)
 
-	line, more := iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "The Go programming")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "language is an open")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "source project to")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "make programmers")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "more productive.")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "Go is expressive,")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "concise, clean, and")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "efficient. Its")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "concurrency")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "mechanisms make it")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "easy to write")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "programs that get")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "the most out of")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "multicore and")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "networked machines,")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "while its novel type")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "system enables")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "flexible and modular")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "program")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "construction. Go")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "compiles quickly to")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "machine code yet has")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "the convenience of")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "garbage collection")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "and the power of")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "run-time reflection.")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "It's a fast,")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "statically typed,")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "compiled language")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "that feels like a")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "dynamically typed,")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, true)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "interpreted")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, true)
 	assert.Equal(t, line, "language.")
 
-	line, more = iter.Next()
-	assert.Equal(t, more, false)
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.Equal(t, exists, false)
 	assert.Equal(t, line, "")
 }
 
@@ -410,28 +512,29 @@ func TestLineIter_Next_printLongText(t *testing.T) {
 	iter := linebreak.New(longText, 20)
 
 	for {
-		line, more := iter.Next()
-		fmt.Println(line)
-		if more == false {
+		line, exists := iter.Next()
+		if !exists {
 			break
 		}
+		fmt.Println(line)
 	}
 }
 
 func TestLineIter_SetIndentToLongText(t *testing.T) {
 	iter := linebreak.New(longText, 40)
 
-	line, more := iter.Next()
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	fmt.Println(line)
 
 	iter.SetIndent(strings.Repeat(" ", 8))
 
 	for {
-		if more == false {
+		if line, exists = iter.Next(); exists {
+			fmt.Println(line)
+		} else {
 			break
 		}
-		line, more = iter.Next()
-		fmt.Println(line)
 	}
 }
 
@@ -439,30 +542,40 @@ func TestLineIter_textContainsNonPrintChar(t *testing.T) {
 	text := "abcdefg\u0002hijklmn"
 	iter := linebreak.New(text, 10)
 
-	line, more := iter.Next()
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
 	assert.Equal(t, line, "abcdefghij")
-	assert.Equal(t, more, true)
+	assert.Equal(t, exists, true)
 
-	line, more = iter.Next()
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
 	assert.Equal(t, line, "klmn")
-	assert.Equal(t, more, false)
+	assert.Equal(t, exists, true)
 }
 
 func TestLineIter_letterWidthOfEastAsianWideLetter(t *testing.T) {
 	text := "東アジアの全角文字は２文字分の幅をとります。"
 	iter := linebreak.New(text, 20)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "東アジアの全角文字は")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "２文字分の幅をとりま")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "す。")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_lineBreaksOfEastAsianWideLetter(t *testing.T) {
@@ -470,147 +583,197 @@ func TestLineIter_lineBreaksOfEastAsianWideLetter(t *testing.T) {
 		"も改行が行われます。"
 	iter := linebreak.New(text, 28)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "東アジアの全角文字は基本的")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "に、文字の前後どちらに行の終")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "わりが来ても改行が行われま")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "す。")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_prohibitionsOfLineBreakOfJapanese_start(t *testing.T) {
 	text := "句読点は、行頭に置くことは禁止である。"
 	iter := linebreak.New(text, 8)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "句読点")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "は、行頭")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "に置くこ")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "とは禁止")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "である。")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_prohibitionsOfLineBreakOfJapanese_end(t *testing.T) {
 	text := "開き括弧は「行末に置く」ことは禁止である。"
 	iter := linebreak.New(text, 12)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "開き括弧は")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "「行末に置")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "く」ことは禁")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "止である。")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_prohibitionsOfLineBreakOfEnglish(t *testing.T) {
 	text := "abc def ghi(jkl mn opq rst uvw xyz)"
 	iter := linebreak.New(text, 11)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "abc def ghi")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "(jkl mn opq")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "rst uvw")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "xyz)")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_prohibitionsOfLineBreakOfEnglish_quots(t *testing.T) {
 	text := `abc def " ghi j " kl mno pq" rst uvw" xyz`
 	iter := linebreak.New(text, 9)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "abc def")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "\" ghi j \"")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "kl mno pq")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "\" rst")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "uvw\" xyz")
+
+	assert.False(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.False(t, exists)
+	assert.Equal(t, line, "")
 }
 
 func TestLineIter_prohibitionsOfLineBreakOfEnglish_mixedQuots(t *testing.T) {
 	text := `abc def " ghi j ' kl mno pq' rst uvw" xyz`
 	iter := linebreak.New(text, 9)
 
-	line, more := iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists := iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "abc def")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "\" ghi j")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "' kl mno")
 
-	line, more = iter.Next()
-	assert.True(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "pq' rst")
 
-	line, more = iter.Next()
-	assert.False(t, more)
+	assert.True(t, iter.HasNext())
+	line, exists = iter.Next()
+	assert.True(t, exists)
 	assert.Equal(t, line, "uvw\" xyz")
 
 	iter = linebreak.New(text, 9)
 
-	for {
-		line, more := iter.Next()
+	for iter.HasNext() {
+		line, ok := iter.Next()
+		assert.True(t, ok)
 		fmt.Println(line)
-		if !more {
-			break
-		}
 	}
 }
 
@@ -623,11 +786,8 @@ func TestLineIter_japanese(t *testing.T) {
 
 	iter := linebreak.New(text, 50)
 
-	for {
-		line, more := iter.Next()
+	for iter.HasNext() {
+		line, _ := iter.Next()
 		fmt.Println(line)
-		if !more {
-			break
-		}
 	}
 }

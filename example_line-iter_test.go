@@ -15,12 +15,9 @@ func ExampleLineIter() {
 
 	fmt.Println("....:....1....:....2....:....3....:....4....:....5")
 	iter := linebreak.New(text, 50)
-	for {
-		line, more := iter.Next()
+	for iter.HasNext() {
+		line, _ := iter.Next()
 		fmt.Println(line)
-		if !more {
-			break
-		}
 	}
 
 	// Output:
@@ -42,17 +39,13 @@ func ExampleLineIter_SetIndent() {
 	fmt.Println("....:....1....:....2....:....3....:....4....:....5")
 
 	iter := linebreak.New(text, 50)
-	line, more := iter.Next()
-	fmt.Println(line)
-
-	if more {
-		for i := 1; ; i++ {
+	line, exists := iter.Next()
+	if exists {
+		fmt.Println(line)
+		for i := 1; iter.HasNext(); i++ {
 			iter.SetIndent(strings.Repeat(" ", i*2))
-			line, more := iter.Next()
+			line, _ := iter.Next()
 			fmt.Println(line)
-			if !more {
-				break
-			}
 		}
 	}
 
